@@ -33,6 +33,7 @@ func (g *Grafana) GetUsers() ([]User, error) {
   return users, err
 }
 
+
 func (g *Grafana) GetUser(info string) (User, error) {
   user := User{}
   query := url.Values{}
