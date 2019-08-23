@@ -35,7 +35,6 @@ type Team struct {
 type Org struct {
   OrgId int
   Name string
-  Role string
 }
 
 func New(auth string, baseURL string) (*Grafana, error) {
