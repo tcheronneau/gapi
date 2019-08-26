@@ -37,6 +37,22 @@ type Org struct {
   Name string
 }
 
+type Folder struct {
+  Id int
+  Uid string
+  Title string
+  Url string
+  HasACL bool
+  CanSave bool
+  CanEdit bool
+  CanAdmin bool
+  CreatedBy string
+  Created string
+  UpdatedBy string
+  Updated string
+  Version int
+}
+
 func New(auth string, baseURL string) (*Grafana, error) {
   u, err := url.Parse(baseURL)
   if err != nil {
