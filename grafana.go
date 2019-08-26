@@ -33,7 +33,7 @@ type Team struct {
 }
 
 type Org struct {
-  OrgId int
+  Id int
   Name string
 }
 
@@ -67,4 +67,3 @@ func (g *Grafana) newRequest(method, requestPath string, query url.Values, body 
 	req.Header.Add("Content-Type", "application/json")
 	return req, err
 }
-
