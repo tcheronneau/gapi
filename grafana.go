@@ -33,8 +33,24 @@ type Team struct {
 }
 
 type Org struct {
-  OrgId int
+  Id int
   Name string
+}
+
+type Folder struct {
+  Id int
+  Uid string
+  Title string
+  Url string
+  HasACL bool
+  CanSave bool
+  CanEdit bool
+  CanAdmin bool
+  CreatedBy string
+  Created string
+  UpdatedBy string
+  Updated string
+  Version int
 }
 
 func New(auth string, baseURL string) (*Grafana, error) {
@@ -67,4 +83,3 @@ func (g *Grafana) newRequest(method, requestPath string, query url.Values, body 
 	req.Header.Add("Content-Type", "application/json")
 	return req, err
 }
-

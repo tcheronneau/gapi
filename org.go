@@ -92,6 +92,7 @@ func (g *Grafana) GetOrgByName(orgname string) (Org, error) {
 	return org, err
 }
 
+
 func (g *Grafana) GetOrgMember(org interface{}) ([]User, error){
   users := make([]User, 0)
   id := int(0)
