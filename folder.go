@@ -59,7 +59,3 @@ func (g *Grafana) GetFolderByUid(uid string) (Folder, error) {
   folder = Folder(tmp)
   return folder,err
 }
-
-func (g *Grafana) CreateFolder(title string) error {
-}
-

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-  "net/url"
   "fmt"
   "bytes"
 )
@@ -18,13 +17,12 @@ type respOrg struct {
 
 
 func (g *Grafana) getOrgId(orgname string) (id int) {
-  did := int(0)
   org, _ := g.GetOrgByName(orgname)
   id = org.Id
   return id
 }
 
-func (g *Grafana) GetOrgs() ([]Org, error) {
+func (g *Grafana) GetOrgs() ([]Org, error) {
   orgs := make([]Org, 0)
   req, err := g.newRequest("GET", "/api/orgs", nil,nil)
   if err != nil {
@@ -211,7 +209,7 @@ func (g *Grafana) UpdateOrg(org interface{}, orgname string) (error){
 func (g *Grafana) AddOrgMember(org, user, role string) error {
   tid := g.getOrgId(org)
   url := fmt.Sprintf("/api/orgs/%d/users",tid)
-  dataMap := map[string]int{
+  dataMap := map[string]string{
     "loginOrEmail": user,
     "role": role,
   }
