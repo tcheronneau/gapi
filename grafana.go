@@ -53,6 +53,26 @@ type Folder struct {
   Version int
 }
 
+type FolderPermission struct {
+  Id int
+  Oid int
+  Created string
+  Updated string
+  UserId int
+  UserLogin string
+  UserEmail string
+  TeamId int
+  Team string
+  Role string
+  Permission int
+  PermissionName string
+  Uid string
+  Title string
+  Slug string
+  IsFolder bool
+  Url string
+}
+
 func New(auth string, baseURL string) (*Grafana, error) {
   u, err := url.Parse(baseURL)
   if err != nil {
