@@ -7,6 +7,9 @@ import (
   "net/http"
 	"io"
 	"path"
+  "errors"
+  "encoding/json"
+  "io/ioutil"
 )
 type Grafana struct {
   key string
@@ -102,4 +105,38 @@ func (g *Grafana) newRequest(method, requestPath string, query url.Values, body 
 
 	req.Header.Add("Content-Type", "application/json")
 	return req, err
+}
+
+func (g *Grafana) getRequest(requestPath string, query url.Values, body io.Reader, obj interface{}) error {
+  req, err := g.newRequest("GET",requestPath, query, body)
+  if err != nil {
+    return err
+  }
+  resp, err := g.Do(req)
+  if err != nil {
+    return err
+  }
+  if resp.StatusCode != 200 {
+    return errors.New(resp.Status)
+  }
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return err
+  }
+  return json.Unmarshal(data,obj)
+}
+
+func (g *Grafana) postRequest(method ,requestPath string, query url.Values, body io.Reader) error {
+  req, err := g.newRequest(method,requestPath,query,body)
+  if err != nil {
+    return err
+  }
+  resp, err := g.Do(req)
+  if err != nil {
+    return err
+  }
+  if resp.StatusCode != 200 {
+    return errors.New(resp.Status)
+  }
+  return err
 }
