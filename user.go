@@ -1,9 +1,6 @@
 package gapi
 
 import (
-  "encoding/json"
-  "errors"
-  "io/ioutil"
   "net/url"
   "fmt"
 )

@@ -2,8 +2,6 @@ package gapi
 
 import (
 	"encoding/json"
-	"errors"
-	"io/ioutil"
   "fmt"
   "bytes"
 )
@@ -15,79 +13,29 @@ type respOrg struct {
   PerPage int
 }
 
-
-func (g *Grafana) getOrgId(orgname string) (id int) {
-  org, _ := g.GetOrgByName(orgname)
-  id = org.Id
-  return id
+func (g *Grafana) getOrgId(orgname string) int {
+  fmt.Printf(orgname)
+  org,_ := g.GetOrgByName(orgname)
+  fmt.Println(org)
+  oid := org.Id
+  return oid
 }
 
 func (g *Grafana) GetOrgs() ([]Org, error) {
   orgs := make([]Org, 0)
-  req, err := g.newRequest("GET", "/api/orgs", nil,nil)
-  if err != nil {
-    return orgs,err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return orgs, err
-  }
-  if resp.StatusCode != 200 {
-    return orgs, errors.New(resp.Status)
-  }
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return orgs, err
-  }
-  err = json.Unmarshal(data, &orgs)
-  return orgs, err
+  return orgs, g.getRequest("/api/orgs",nil,nil,&orgs)
 }
 
 func (g *Grafana) GetOrgById(orgid int) (Org, error) {
   org := Org{}
   url := fmt.Sprintf("/api/orgs/%d", orgid)
-  req, err := g.newRequest("GET", url, nil,nil)
-  if err != nil {
-    return org, err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return org, err
-  }
-  if resp.StatusCode != 200 {
-    return org, errors.New(resp.Status)
-  }
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return org, err
-  }
-  err = json.Unmarshal(data, &org)
-  return org, err
+  return org, g.getRequest(url,nil,nil,&org)
 }
 
 func (g *Grafana) GetOrgByName(orgname string) (Org, error) {
   org := Org{}
-  url := fmt.Sprintf("/api/orgs/%s", orgname)
-	req, err := g.newRequest("GET", url, nil, nil)
-	if err != nil {
-		return org, err
-	}
-	resp, err := g.Do(req)
-	if err != nil {
-		return org, err
-	}
-	if resp.StatusCode != 200 {
-		return org, errors.New(resp.Status)
-	}
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return org, err
-	}
-	err = json.Unmarshal(data, &org)
-	if err != nil {
-		return org, err
-	}
-	return org, err
+  url := fmt.Sprintf("/api/orgs/name/%s", orgname)
+  return org, g.getRequest(url,nil,nil,&org)
 }
 
 
@@ -103,26 +51,7 @@ func (g *Grafana) GetOrgMember(org interface{}) ([]User, error){
       id = 0
   }
   url := fmt.Sprintf("/api/orgs/%d/users",id)
-  req, err := g.newRequest("GET",url,nil,nil)
-  if err != nil {
-    return users, err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return users, err
-  }
-  if resp.StatusCode != 200 {
-    return users, errors.New(resp.Status)
-  }
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    return users, err
-  }
-  err = json.Unmarshal(data, &users)
-  if err != nil {
-    return users, err
-  }
-  return users, err
+  return users, g.getRequest(url,nil,nil,&users)
 }
 
 
@@ -135,18 +64,7 @@ func (g *Grafana) AddOrg(orgname string) (error) {
   if err != nil {
     return err
   }
-  req, err := g.newRequest("POST", "/api/orgs", nil, bytes.NewBuffer(data))
-  if err != nil {
-    return err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return err
-  }
-  if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
-  }
-  return err
+  return g.postRequest("POST","/api/orgs",nil,bytes.NewBuffer(data))
 }
 
 func (g *Grafana) DeleteOrg(org interface{}) (error){
@@ -156,22 +74,9 @@ func (g *Grafana) DeleteOrg(org interface{}) (error){
       id = g.getOrgId(org.(string))
     case int:
       id = int(org.(int))
-    default:
-      id = 0
   }
   url := fmt.Sprintf("/api/orgs/%d",id)
-  req, err := g.newRequest("DELETE",url,nil,nil)
-  if err != nil {
-    return err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return err
-  }
-  if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
-  }
-  return err
+  return g.postRequest("DELETE",url,nil,nil)
 }
 
 func (g *Grafana) UpdateOrg(org interface{}, orgname string) (error){
@@ -192,18 +97,7 @@ func (g *Grafana) UpdateOrg(org interface{}, orgname string) (error){
       id = 0
   }
   url := fmt.Sprintf("/api/orgs/%d",id)
-  req, err := g.newRequest("PUT",url,nil,bytes.NewBuffer(data))
-  if err != nil {
-    return err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return err
-  }
-  if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
-  }
-  return err
+  return g.postRequest("PUT",url,nil,bytes.NewBuffer(data))
 }
 
 func (g *Grafana) AddOrgMember(org, user, role string) error {
@@ -214,18 +108,10 @@ func (g *Grafana) AddOrgMember(org, user, role string) error {
     "role": role,
   }
   data, err := json.Marshal(dataMap)
-  req, err := g.newRequest("POST",url,nil,bytes.NewBuffer(data))
   if err != nil {
     return err
   }
-  resp, err := g.Do(req)
-  if err != nil {
-    return err
-  }
-  if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
-  }
-  return err
+  return g.postRequest("POST",url,nil,bytes.NewBuffer(data))
 }
 
 func (g *Grafana) RemoveOrgMember(org, user string) error {
@@ -233,16 +119,5 @@ func (g *Grafana) RemoveOrgMember(org, user string) error {
   uid := u.Id
   tid := g.getOrgId(org)
   url := fmt.Sprintf("/api/orgs/%d/members/%d",tid,uid)
-  req, err := g.newRequest("DELETE",url,nil,nil)
-  if err != nil {
-    return err
-  }
-  resp, err := g.Do(req)
-  if err != nil {
-    return err
-  }
-  if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
-  }
-  return err
+  return g.postRequest("DELETE",url,nil,nil)
 }
