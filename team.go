@@ -35,7 +35,7 @@ func (g *Grafana) GetTeamMember(team interface{}) ([]User, error){
   id := int(0)
   switch team.(type) {
     case string:
-      id, _ = g.getTeamId(team.(string))
+      id, _ = g.GetTeamId(team.(string))
     case int:
       id = int(team.(int))
     default:
@@ -46,7 +46,7 @@ func (g *Grafana) GetTeamMember(team interface{}) ([]User, error){
 }
 
 
-func (g *Grafana) getTeamId(teamname string) (int, error) {
+func (g *Grafana) GetTeamId(teamname string) (int, error) {
   id := int(0)
   teams, err := g.GetTeamByName(teamname)
   if err != nil {
@@ -79,7 +79,7 @@ func (g *Grafana) DeleteTeam(team interface{}) (error){
   id := int(0)
   switch team.(type) {
     case string:
-      id, _ = g.getTeamId(team.(string))
+      id, _ = g.GetTeamId(team.(string))
     case int:
       id = int(team.(int))
     default:
@@ -100,7 +100,7 @@ func (g *Grafana) UpdateTeam(team interface{}, teamname string) (error){
   }
   switch team.(type) {
     case string:
-      id, _ = g.getTeamId(team.(string))
+      id, _ = g.GetTeamId(team.(string))
     case int:
       id = int(team.(int))
     default:
@@ -113,7 +113,7 @@ func (g *Grafana) UpdateTeam(team interface{}, teamname string) (error){
 func (g *Grafana) AddTeamMember(user, team string) error {
   u,_ := g.GetUser(user)
   uid := u.Id
-  tid, _ := g.getTeamId(team)
+  tid, _ := g.GetTeamId(team)
   url := fmt.Sprintf("/api/teams/%d/members",tid)
   dataMap := map[string]int{
     "userId": uid,
@@ -128,7 +128,7 @@ func (g *Grafana) AddTeamMember(user, team string) error {
 func (g *Grafana) RemoveTeamMember(user, team string) error {
   u,_ := g.GetUser(user)
   uid := u.Id
-  tid, _ := g.getTeamId(team)
+  tid, _ := g.GetTeamId(team)
   url := fmt.Sprintf("/api/teams/%d/members/%d",tid,uid)
   return g.postRequest("DELETE",url,nil,nil)
 }
