@@ -136,7 +136,7 @@ func (g *Grafana) postRequest(method ,requestPath string, query url.Values, body
     return err
   }
   if resp.StatusCode != 200 {
-    return errors.New(resp.Status)
+    return errors.New(resp.StatusCode)
   }
   return err
 }
