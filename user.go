@@ -11,12 +11,27 @@ func (g *Grafana) GetUsers() ([]User, error) {
   return users, g.getRequest("/api/users",nil,nil,&users)
 }
 
+func (g *Grafana) GetUserId(user string) (int, error) {
+  id := int(0)
+  user,err := g.GetUser(user)
+  if err != nil {
+    return id, err
+  }
+  id = user.Id
+  return id, err
+}
 
 func (g *Grafana) GetUser(info string) (User, error) {
   user := User{}
   query := url.Values{}
   query.Add("loginOrEmail",info)
   return user, g.getRequest("/api/users/lookup",query,nil,&user)
+}
+
+func (g *Grafana) GetUserById(id int) (User, error) {
+  user := User{}
+  url := fmt.Sprintf("/api/users/%d",id)
+  return user, g.getRequest(url,nil,nil,&user)
 }
 
 func (g *Grafana) GetTeamOf(info string) ([]Team, error) {
