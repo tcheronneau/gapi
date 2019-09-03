@@ -13,11 +13,11 @@ func (g *Grafana) GetUsers() ([]User, error) {
 
 func (g *Grafana) GetUserId(user string) (int, error) {
   id := int(0)
-  user,err := g.GetUser(user)
+  u,err := g.GetUser(user)
   if err != nil {
     return id, err
   }
-  id = user.Id
+  id = u.Id
   return id, err
 }
 
