@@ -40,6 +40,29 @@ type Org struct {
   Name string
 }
 
+//type Dashboard struct {
+//  Annotations interface{}
+//  Description string
+//  Editable bool
+//  GnetId int
+//  GraphTooltip int
+//  Id int
+//  Iteration int
+//  Links interface{}
+//  Panels interface{}
+//  Refresh string
+//  SchemaVersion int
+//  Style string
+//  Tags []string
+//  Templating interface{}
+//  Time interface{}
+//  Timepicker interface{}
+//  Timezone string
+//  Title string
+//  Uid string
+//  Version int
+//}
+
 type Folder struct {
   Id int
   Uid string
@@ -124,6 +147,11 @@ func (g *Grafana) getRequest(requestPath string, query url.Values, body io.Reade
     return err
   }
   return json.Unmarshal(data,obj)
+}
+
+func (g *Grafana) SwitchOrg(orgid int) error {
+  url := fmt.Sprintf("/api/user/using/%d",orgid)
+  return g.postRequest("POST",url,nil,nil)
 }
 
 func (g *Grafana) postRequest(method ,requestPath string, query url.Values, body io.Reader) error {

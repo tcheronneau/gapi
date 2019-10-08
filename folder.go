@@ -15,7 +15,7 @@ func (g *Grafana) GetFolders() ([]Folder, error) {
 
 func (g *Grafana) GetFolderByUid(uid string) (Folder, error) {
   folder := Folder{}
-  url := fmt.Sprintf("/api/folders/%s", uid)
+url := fmt.Sprintf("/api/folders/%s", uid)
   tmp := Folder{}
   err := g.getRequest(url,nil,nil,&tmp)
   folder = Folder(tmp)
