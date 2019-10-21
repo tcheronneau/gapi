@@ -63,6 +63,6 @@ func (g *Grafana) DeleteUser(user string) error {
   if err != nil {
 		return err
   }
-	url := fmt.Sprintf('/api/admin/users/%d', id)
+	url := fmt.Sprintf("/api/admin/users/%d", id)
   return g.postRequest("DELETE",url,nil,nil)
 }
