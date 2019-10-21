@@ -11,6 +11,7 @@ func (g *Grafana) GetUsers() ([]User, error) {
   return users, g.getRequest("/api/users",nil,nil,&users)
 }
 
+
 func (g *Grafana) GetUserId(user string) (int, error) {
   id := int(0)
   u,err := g.GetUser(user)
@@ -54,4 +55,14 @@ func (g *Grafana) GetOrgOf(info string) ([]Org, error) {
   id := user.Id
   url := fmt.Sprintf("/api/users/%d/orgs", id)
   return orgs, g.getRequest(url,nil,nil,&orgs)
+}
+
+
+func (g *Grafana) DeleteUser(user string) error {
+	id, err := g.GetUserId(user)
+  if err != nil {
+		return err
+  }
+	url := fmt.Sprintf('/api/admin/users/%d', id)
+  return g.postRequest("DELETE",url,nil,nil)
 }
